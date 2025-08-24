@@ -1,73 +1,21 @@
-<!DOCTYPE html>
-<html lang="fa">
+<html>
   <head>
-    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Magic Frame with MindAR</title>
-
-    <!-- A-Frame + MindAR -->
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
-    <style>
-      body, html { margin: 0; height: 100%; overflow: hidden; background: #000; }
-      #overlay {
-        position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-        background: rgba(0,0,0,0.7); color: #fff; font-family: sans-serif;
-        z-index: 10; text-align: center; padding: 20px;
-      }
-      #overlay.hidden { display: none; }
-      .btn {
-        margin-top: 12px; padding: 12px 20px; background: #fff; color: #000;
-        border-radius: 8px; font-weight: bold; cursor: pointer;
-      }
-    </style>
   </head>
   <body>
-    <!-- اوورلی برای شروع پخش ویدیو -->
-    <div id="overlay">
-      <div>
-        <p>برای شروع AR روی دکمه زیر بزنید</p>
-        <div class="btn" id="startBtn">شروع</div>
-      </div>
-    </div>
-
-    <a-scene
-      mindar-image="imageTargetSrc: ./targets.mind; uiScanning: true"
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: true"
-      embedded
-    >
+    <a-scene mindar-image="imageTargetSrc: https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       <a-assets>
-        <!-- ویدیوی قاب (جایگزین کن با ویدیوی خودت) -->
-        <video id="magicVideo" src="./assets/magic.mp4"
-               preload="auto" muted playsinline webkit-playsinline loop></video>
+        <img id="card" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.png" />
+        <a-asset-item id="avatarModel" src="https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/softmind/scene.gltf"></a-asset-item>
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-      <!-- محتوای قاب روی تارگت اول -->
-      <a-entity id="marker" mindar-image-target="targetIndex: 0">
-        <a-plane src="#magicVideo" width="1" height="0.56"></a-plane>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-plane src="#card" position="0 0 0" height="0.552" width="1" rotation="0 0 0"></a-plane>
+        <a-gltf-model rotation="0 0 0 " position="0 0 0.1" scale="0.005 0.005 0.005" src="#avatarModel" animation="property: position; to: 0 0.1 0.1; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate">
       </a-entity>
     </a-scene>
-
-    <script>
-      const video = document.getElementById("magicVideo");
-      const overlay = document.getElementById("overlay");
-      const startBtn = document.getElementById("startBtn");
-      const marker = document.getElementById("marker");
-
-      async function startVideo() {
-        try { await video.play(); } catch(e) { console.warn("autoplay blocked"); }
-        overlay.classList.add("hidden");
-      }
-
-      startBtn.addEventListener("click", startVideo);
-      overlay.addEventListener("click", startVideo);
-
-      marker.addEventListener("targetFound", () => { video.play(); });
-      marker.addEventListener("targetLost", () => { video.pause(); });
-    </script>
   </body>
 </html>
